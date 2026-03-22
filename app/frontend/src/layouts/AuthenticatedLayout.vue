@@ -23,6 +23,8 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible'
 
+import ModeToggle from '@/components/ModeToggle.vue'
+
 // Menu items.
 const items = [
   { title: 'Dashboard', url: '#', icon: Home },
@@ -114,6 +116,7 @@ const isOpen = ref(false)
         class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
         <div class="flex items-center gap-2 px-4">
           <SidebarTrigger class="-ml-1" />
+          <ModeToggle />
         </div>
       </header>
       <router-view />
