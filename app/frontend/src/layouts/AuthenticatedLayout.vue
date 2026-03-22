@@ -55,7 +55,8 @@ const isOpen = ref(false)
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg">
-              <div class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <div
+                class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <!-- <GalleryVerticalEnd class="size-4" /> -->
               </div>
               <div class="grid flex-1 text-left text-sm leading-tight">
@@ -116,6 +117,10 @@ const isOpen = ref(false)
         class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
         <div class="flex items-center gap-2 px-4">
           <SidebarTrigger class="-ml-1" />
+        </div>
+        <div class="fade-bottom absolute w-full backdrop-blur-lg"></div>
+        <div class="max-w-container relative mx-auto"></div>
+        <div class="flex items-center gap-2 px-4">
           <ModeToggle />
         </div>
       </header>
