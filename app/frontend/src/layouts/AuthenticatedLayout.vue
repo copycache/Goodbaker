@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { Calendar, Home, Inbox, Search, Settings, ChevronsUpDown } from 'lucide-vue-next'
 import {
   Sidebar,
@@ -13,6 +12,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
@@ -44,8 +46,6 @@ const items = [
     ],
   },
 ]
-
-const isOpen = ref(false)
 </script>
 
 <template>
@@ -67,40 +67,45 @@ const isOpen = ref(false)
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+
       <SidebarContent>
         <SidebarGroup>
+
           <SidebarGroupLabel>MAIN MENU</SidebarGroupLabel>
+          
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem v-for="item in items" :key="item.title">
-                <!-- Check if item has subItems -->
                 <template v-if="item.subItems">
-                  <Collapsible v-model:open="isOpen" class="flex-col gap-2">
-                    <SidebarMenuButton as-child>
-                      <CollapsibleTrigger as-child>
-                        <SidebarMenuButton>
-                          <component :is="item.icon" />
-                          <span>{{ item.title }}</span>
-                          <ChevronsUpDown class="ml-auto h-4 w-4" />
-                        </SidebarMenuButton>
-                      </CollapsibleTrigger>
-                    </SidebarMenuButton>
+                  <Collapsible>
+                    <CollapsibleTrigger as-child>
+                      <SidebarMenuButton>
+                        <component :is="item.icon" />
+                        <span>{{ item.title }}</span>
+                        <ChevronsUpDown class="ml-auto h-4 w-4" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
 
-                    <CollapsibleContent class="flex flex-col">
-                      <SidebarMenuItem v-for="sub in item.subItems" :key="sub.title">
-                        <SidebarMenuButton as-child>
-                          <a :href="sub.url" class="flex gap-2 items-center px-4 py-2">
-                            <!-- <component :is="sub.icon" /> -->
-                            <span>{{ sub.title }}</span>
-                          </a>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        <SidebarMenuSubItem
+                          v-for="sub in item.subItems"
+                          :key="sub.title"
+                        >
+                          <SidebarMenuSubButton as-child>
+                            <a :href="sub.url">
+                              {{ sub.title }}
+                            </a>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      </SidebarMenuSub>
                     </CollapsibleContent>
                   </Collapsible>
                 </template>
+
                 <template v-else>
                   <SidebarMenuButton as-child>
-                    <a :href="item.url">
+                    <a :href="item.url" class="flex items-center gap-2">
                       <component :is="item.icon" />
                       <span>{{ item.title }}</span>
                     </a>
@@ -112,6 +117,7 @@ const isOpen = ref(false)
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
+
     <SidebarInset>
       <header
         class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
