@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { Calendar, Home, Inbox, Search, Settings, ChevronsUpDown } from 'lucide-vue-next'
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+const route = useRoute()
+
+import { Calendar, ChartPie, User, Search, Settings, ChevronsUpDown } from 'lucide-vue-next'
 import {
   Sidebar,
   SidebarContent,
@@ -20,32 +24,102 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar'
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 import ModeToggle from '@/components/ModeToggle.vue'
 
 // Menu items.
 const items = [
-  { title: 'Dashboard', url: '#', icon: Home },
-  { title: 'User List', url: '#', icon: Inbox },
-  { title: 'Branches', url: '#', icon: Calendar },
-  { title: 'Sales', url: '#', icon: Search },
-  { title: 'Delivery', url: '#', icon: Settings },
-  {
-    title: 'Inventory',
-    url: '#',
-    icon: Settings,
-    subItems: [
-      { title: 'Products', url: '#', icon: Settings },
-      { title: 'Premixes', url: '#', icon: Settings },
-      { title: 'Raw Materials', url: '#', icon: Settings },
-      { title: 'Transfer Items', url: '#', icon: Settings },
-    ],
-  },
+  { title: 'Dashboard', url: '/dashboard', icon: ChartPie },
+
+  { group: 'Sales', title: 'Sales Orders', url: '/admin/sales/orders', icon: Search },
+  { group: 'Sales', title: 'Delivery', url: '/admin/sales/delivery', icon: Settings },
+  { group: 'Sales', title: 'Invoices / Payments', url: '/admin/sales/invoices', icon: Settings },
+  { group: 'Sales', title: 'Returns / Refunds', url: '/admin/sales/returns', icon: Settings },
+  { group: 'Sales', title: 'Discounts / Promotions', url: '/admin/sales/discounts', icon: Settings },
+
+  { group: 'Inventory', title: 'Products', url: '/products', icon: Settings },
+  { group: 'Inventory', title: 'Raw Materials', url: '/admin/inventory/raw-materials', icon: Settings },
+  { group: 'Inventory', title: 'Premixes', url: '/admin/inventory/premixes', icon: Settings },
+  { group: 'Inventory', title: 'Supplies', url: '/admin/inventory/supplies', icon: Settings },
+  { group: 'Inventory', title: 'Transfers', url: '/admin/inventory/transfers', icon: Settings },
+  { group: 'Inventory', title: 'Stock Adjustments', url: '/admin/inventory/stock-adjustments', icon: Settings },
+  { group: 'Inventory', title: 'Reorder Alerts / Minimum Stock Levels', url: '/admin/inventory/reorder-alerts', icon: Settings },
+  { group: 'Inventory', title: 'Inventory Valuation / Cost Tracking', url: '/admin/inventory/inventory-valuation', icon: Settings },
+
+  { group: 'Purchases', title: 'Create Purchase', url: '/admin/purchases/create', icon: Calendar },
+  { group: 'Purchases', title: 'View Purchases', url: '/admin/purchases/view', icon: Calendar },
+  { group: 'Purchases', title: 'Supplier Management', url: '/admin/purchases/suppliers', icon: Calendar },
+  { group: 'Purchases', title: 'Purchase Returns', url: '/admin/purchases/returns', icon: Calendar },
+  { group: 'Purchases', title: 'Purchase Approval Workflow', url: '/admin/purchases/approval', icon: Calendar },
+
+  { group: 'Clients', title: 'Clients', url: '/admin/clients', icon: User },
+  { group: 'Clients', title: 'Client Categories', url: '/admin/clients/categories', icon: User },
+  { group: 'Clients', title: 'Pricing', url: '/admin/clients/pricing', icon: User },
+  { group: 'Clients', title: 'Credit Limits / Outstanding Balances', url: '/admin/clients/credit-limits', icon: User },
+  { group: 'Clients', title: 'Activity Logs / Interaction History', url: '/admin/clients/activity-logs', icon: User },
+
+  { group: 'Management', title: 'Users', url: '/admin/management/users', icon: User },
+  { group: 'Management', title: 'Branches', url: '/admin/management/branches', icon: Calendar },
+  { group: 'Management', title: 'Roles & Permissions', url: '/admin/management/roles', icon: Calendar },
+  { group: 'Management', title: 'Audit Logs', url: '/admin/management/audit-logs', icon: Calendar },
+
+  { group: 'Reports', title: 'Sales Reports', url: '/admin/reports/sales', icon: ChartPie },
+  { group: 'Reports', title: 'Inventory Reports', url: '/admin/reports/inventory', icon: ChartPie },
+  { group: 'Reports', title: 'Profit & Loss Reports', url: '/admin/reports/profit-loss', icon: ChartPie },
+  { group: 'Reports', title: 'Trend Analysis', url: '/admin/reports/trend-analysis', icon: ChartPie },
+  { group: 'Reports', title: 'Custom Reports', url: '/admin/reports/custom', icon: ChartPie },
+
+  { group: 'Others', title: 'Settings', url: '/admin/settings', icon: Settings },
+  { group: 'Others', title: 'Backup / Restore', url: '/admin/settings', icon: Settings },
+  { group: 'Others', title: 'Integration Settings', url: '/admin/settings', icon: Settings },
 ]
+
+const breadcrumbItems = computed(() => {
+  const pathSegments = route.path.split('/').filter(Boolean)
+  const breadcrumbs: { title: string; url: string }[] = []
+
+  let fullPath = ''
+
+  pathSegments.forEach((segment) => {
+    fullPath += '/' + segment
+
+    const match = items.find((item) => item.url === fullPath)
+
+    if (match) {
+      if (match.group && !breadcrumbs.find(b => b.title === match.group)) {
+        breadcrumbs.push({
+          title: match.group,
+          url: '/dashboard',
+        })
+      }
+
+      breadcrumbs.push({
+        title: match.title,
+        url: match.url,
+      })
+    }
+  })
+
+  if (breadcrumbs.length === 0 && route.path === '/dashboard') {
+    breadcrumbs.push({ title: 'Dashboard', url: '/dashboard' })
+  }
+
+  return breadcrumbs
+})
 </script>
 
 <template>
@@ -60,7 +134,7 @@ const items = [
                 <!-- <GalleryVerticalEnd class="size-4" /> -->
               </div>
               <div class="grid flex-1 text-left text-sm leading-tight">
-                <span class="truncate font-semibold">Company Inc</span>
+                <span class="truncate font-semibold">Goodbaker</span>
                 <span class="truncate text-xs">Enterprise</span>
               </div>
             </SidebarMenuButton>
@@ -70,49 +144,24 @@ const items = [
 
       <SidebarContent>
         <SidebarGroup>
-
-          <SidebarGroupLabel>MAIN MENU</SidebarGroupLabel>
-          
+          <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem v-for="item in items" :key="item.title">
-                <template v-if="item.subItems">
-                  <Collapsible>
-                    <CollapsibleTrigger as-child>
-                      <SidebarMenuButton>
-                        <component :is="item.icon" />
-                        <span>{{ item.title }}</span>
-                        <ChevronsUpDown class="ml-auto h-4 w-4" />
-                      </SidebarMenuButton>
-                    </CollapsibleTrigger>
+            <template v-for="(item, index) in items" :key="index">
+              <SidebarGroupLabel v-if="item.group && (index === 0 || item.group !== items[index - 1]?.group)">
+                {{ item.group }}
+              </SidebarGroupLabel>
 
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        <SidebarMenuSubItem
-                          v-for="sub in item.subItems"
-                          :key="sub.title"
-                        >
-                          <SidebarMenuSubButton as-child>
-                            <a :href="sub.url">
-                              {{ sub.title }}
-                            </a>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </template>
-
-                <template v-else>
-                  <SidebarMenuButton as-child>
-                    <a :href="item.url" class="flex items-center gap-2">
-                      <component :is="item.icon" />
-                      <span>{{ item.title }}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </template>
+              <SidebarMenuItem>
+                <SidebarMenuButton as-child>
+                  <router-link :to="item.url" :class="route.path === item.url
+                    ? 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold'
+                    : ''" class="flex items-center gap-2">
+                    <component :is="item.icon" />
+                    <span>{{ item.title }}</span>
+                  </router-link>
+                </SidebarMenuButton>
               </SidebarMenuItem>
-            </SidebarMenu>
+            </template>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
@@ -123,6 +172,21 @@ const items = [
         class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
         <div class="flex items-center gap-2 px-4">
           <SidebarTrigger class="-ml-1" />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <template v-for="(item, index) in breadcrumbItems" :key="index">
+                <BreadcrumbItem>
+                  <BreadcrumbLink :href="item.url">
+                    {{ item.title }}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+
+                <BreadcrumbSeparator v-if="index < breadcrumbItems.length - 1">
+                  /
+                </BreadcrumbSeparator>
+              </template>
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
         <div class="fade-bottom absolute w-full backdrop-blur-lg"></div>
         <div class="max-w-container relative mx-auto"></div>

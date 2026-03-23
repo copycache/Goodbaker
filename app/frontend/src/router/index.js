@@ -25,12 +25,24 @@ const router = createRouter({
       // beforeEnter: [requireAuth, requireAdmin],
       children: [
         {
-          path: "Dashboard",
+          path: "/dashboard",
+          name: "dashboard",
           component: () => import('../views/admin/Dashboard.vue'),
+          meta: { title: 'Dashboard' },
+        },
+        {
+          path: "/products",
+          name: "products",
+          component: () => import('../views/admin/Inventory/Products/Products.vue'),
+          meta: { title: 'Products' },
         },
       ],
     },
   ]
+})
+
+router.afterEach((to) => {
+  document.title = to.meta.title || 'Default Title'
 })
 
 export default router
