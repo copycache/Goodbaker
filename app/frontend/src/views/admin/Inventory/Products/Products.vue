@@ -3,6 +3,7 @@ import { EllipsisVertical, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRigh
 
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Label } from '@/components/ui/label'
 import {
   Table,
   TableBody,
@@ -33,14 +34,17 @@ import {
   PaginationContent,
   PaginationEllipsis,
   PaginationItem,
-  PaginationNext,
+  PaginationFirst,
   PaginationPrevious,
+  PaginationNext,
+  PaginationLast,
 } from '@/components/ui/pagination'
 
 export default {
   components: {
     Badge,
     Button,
+    Label,
 
     EllipsisVertical,
     ChevronLeft,
@@ -74,8 +78,10 @@ export default {
     PaginationContent,
     PaginationEllipsis,
     PaginationItem,
-    PaginationNext,
+    PaginationFirst,
     PaginationPrevious,
+    PaginationNext,
+    PaginationLast,
   },
   data() {
     const products = [
@@ -135,11 +141,21 @@ export default {
 
     return {
       products,
+      currentPage: 1,
+      itemsPerPage: 5,
     }
   },
 
   computed: {
+    paginatedProducts() {
+      const start = (this.currentPage - 1) * this.itemsPerPage
+      const end = start + this.itemsPerPage
+      return this.products.slice(start, end)
+    },
 
+    totalItems() {
+      return this.products.length
+    }
   },
 
   mounted() {
@@ -201,7 +217,7 @@ export default {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow v-for="product in products" :key="product.id">
+          <TableRow v-for="product in paginatedProducts" :key="product.id">
             <TableCell>
               <div
                 class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
@@ -248,6 +264,48 @@ export default {
           </TableRow>
         </TableBody>
       </Table>
+    </div>
+    <div class="flex justify-between">
+      <div class="flex items-center gap-2">
+        <Label for="itemsPerPage">Rows per page</Label>
+        <Select v-model="itemsPerPage">
+          <SelectTrigger id="itemsPerPage" class="w-20" tabindex="0">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem :value="5">5</SelectItem>
+            <SelectItem :value="10">10</SelectItem>
+            <SelectItem :value="20">20</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div class="flex justify-between items-center">
+        <Label class="text-sm text-muted-foreground px-2">
+          Page {{ currentPage }} of {{ Math.ceil(totalItems / itemsPerPage) }}
+        </Label>
+        <div class="flex flex-col gap-6">
+          <Pagination :items-per-page="itemsPerPage" :total="totalItems" :page="currentPage"
+            @update:page="(p) => currentPage = p">
+            <PaginationContent class="flex items-center gap-2">
+
+              <!-- FIRST -->
+              <PaginationFirst :disabled="currentPage === 1" @click="currentPage = 1" />
+
+              <!-- PREVIOUS -->
+              <PaginationPrevious :disabled="currentPage === 1" @click="currentPage = Math.max(1, currentPage - 1)" />
+
+              <!-- NEXT -->
+              <PaginationNext :disabled="currentPage === Math.ceil(totalItems / itemsPerPage)"
+                @click="currentPage = Math.min(Math.ceil(totalItems / itemsPerPage), currentPage + 1)" />
+
+              <!-- LAST -->
+              <PaginationLast :disabled="currentPage === Math.ceil(totalItems / itemsPerPage)"
+                @click="currentPage = Math.ceil(totalItems / itemsPerPage)" />
+
+            </PaginationContent>
+          </Pagination>
+        </div>
+      </div>
     </div>
   </div>
 </template>

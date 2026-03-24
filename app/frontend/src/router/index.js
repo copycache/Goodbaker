@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import HomeView from "../views/HomeView.vue";
 
 import AuthenticatedLayout from "../layouts/AuthenticatedLayout.vue";
 
@@ -7,9 +7,10 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: HomeView
+      path: "/",
+      name: "home",
+      component: HomeView,
+      meta: { title: "Home" },
     },
     // {
     //   path: '/about',
@@ -27,22 +28,41 @@ const router = createRouter({
         {
           path: "/dashboard",
           name: "dashboard",
-          component: () => import('../views/admin/Dashboard.vue'),
-          meta: { title: 'Dashboard' },
+          component: () => import("../views/admin/Dashboard.vue"),
+          meta: { title: "Dashboard" },
         },
         {
-          path: "/products",
-          name: "products",
-          component: () => import('../views/admin/Inventory/Products/Products.vue'),
-          meta: { title: 'Products' },
+          path: "/inventory",
+          children: [
+            {
+              path: "/inventory/products",
+              name: "products",
+              component: () =>
+                import("../views/admin/Inventory/Products/Products.vue"),
+              meta: { title: "Products" },
+            },
+          ],
+        },
+
+        {
+          path: "/management",
+          children: [
+            {
+              path: "/management/users",
+              name: "users",
+              component: () =>
+                import("../views/admin/Management/Users/Users.vue"),
+              meta: { title: "Users" },
+            },
+          ],
         },
       ],
     },
-  ]
-})
+  ],
+});
 
 router.afterEach((to) => {
-  document.title = to.meta.title || 'Default Title'
-})
+  document.title = `${to.meta.title} - Goodbaker`;
+});
 
-export default router
+export default router;
