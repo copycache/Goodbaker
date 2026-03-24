@@ -33,11 +33,11 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 import ModeToggle from '@/components/ModeToggle.vue'
 
@@ -152,14 +152,24 @@ const breadcrumbItems = computed(() => {
               </SidebarGroupLabel>
 
               <SidebarMenuItem>
-                <SidebarMenuButton as-child>
-                  <router-link :to="item.url" :class="route.path === item.url
-                    ? 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold'
-                    : ''" class="flex items-center gap-2">
-                    <component :is="item.icon" />
-                    <span>{{ item.title }}</span>
-                  </router-link>
-                </SidebarMenuButton>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger as-child>
+                      <SidebarMenuButton as-child>
+                        <router-link :to="item.url" :class="route.path === item.url
+                          ? 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold'
+                          : ''" class="flex items-center gap-2">
+                          <component :is="item.icon" />
+                          <span class="truncate">{{ item.title }}</span>
+                        </router-link>
+                      </SidebarMenuButton>
+                    </TooltipTrigger>
+
+                    <TooltipContent side="right">
+                      {{ item.title }}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </SidebarMenuItem>
             </template>
           </SidebarGroupContent>
