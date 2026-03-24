@@ -142,7 +142,7 @@ export default {
     return {
       products,
       currentPage: 1,
-      itemsPerPage: 5,
+      itemsPerPage: 10,
     }
   },
 
@@ -273,17 +273,18 @@ export default {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem :value="5">5</SelectItem>
-            <SelectItem :value="10">10</SelectItem>
-            <SelectItem :value="20">20</SelectItem>
+            <SelectItem :value="itemsPerPage">{{ itemsPerPage }}</SelectItem>
+            <SelectItem :value="25">25</SelectItem>
+            <SelectItem :value="50">50</SelectItem>
+            <SelectItem :value="100">100</SelectItem>
           </SelectContent>
         </Select>
       </div>
       <div class="flex justify-between items-center">
-        <Label class="text-sm text-muted-foreground px-2">
+        <Label>
           Page {{ currentPage }} of {{ Math.ceil(totalItems / itemsPerPage) }}
         </Label>
-        <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-5">
           <Pagination :items-per-page="itemsPerPage" :total="totalItems" :page="currentPage"
             @update:page="(p) => currentPage = p">
             <PaginationContent class="flex items-center gap-2">

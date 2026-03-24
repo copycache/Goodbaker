@@ -86,31 +86,161 @@ export default {
     data() {
         const users = [
             {
-                id: 'USR001',
-                full_name: 'John Doe',
-                email: 'john.doe@example.com',
-                role: 'Admin',
-                branch: 'New York',
+                id: 'USR011',
+                full_name: 'Ethan Clark',
+                email: 'ethan.clark@example.com',
+                role: 'User',
+                branch: 'Austin',
                 status: 'Active',
-                last_login: '2023-10-01 09:00:00',
-                created_at: '2023-01-15 10:30:00',
+                last_login: '2023-10-07 08:30:00',
+                created_at: '2023-09-20 10:00:00',
             },
             {
-                id: 'USR002',
-                full_name: 'Jane Smith',
-                email: 'jane.smith@example.com',
-                role: 'User',
-                branch: 'Los Angeles',
+                id: 'USR012',
+                full_name: 'Mia Rodriguez',
+                email: 'mia.rodriguez@example.com',
+                role: 'Manager',
+                branch: 'Jacksonville',
                 status: 'Active',
-                last_login: '2023-10-01 11:00:00',
-                created_at: '2023-02-20 14:45:00',
+                last_login: '2023-10-07 12:15:00',
+                created_at: '2023-09-22 11:45:00',
             },
-        ]
+            {
+                id: 'USR013',
+                full_name: 'Noah Lewis',
+                email: 'noah.lewis@example.com',
+                role: 'User',
+                branch: 'Fort Worth',
+                status: 'Inactive',
+                last_login: '2023-09-29 09:10:00',
+                created_at: '2023-09-25 14:30:00',
+            },
+            {
+                id: 'USR014',
+                full_name: 'Isabella Walker',
+                email: 'isabella.walker@example.com',
+                role: 'Admin',
+                branch: 'Columbus',
+                status: 'Active',
+                last_login: '2023-10-08 10:20:00',
+                created_at: '2023-09-27 13:00:00',
+            },
+            {
+                id: 'USR015',
+                full_name: 'Liam Hall',
+                email: 'liam.hall@example.com',
+                role: 'User',
+                branch: 'Charlotte',
+                status: 'Suspended',
+                last_login: '2023-09-26 15:45:00',
+                created_at: '2023-09-28 09:15:00',
+            },
+            {
+                id: 'USR016',
+                full_name: 'Amelia Allen',
+                email: 'amelia.allen@example.com',
+                role: 'Manager',
+                branch: 'San Francisco',
+                status: 'Active',
+                last_login: '2023-10-09 11:05:00',
+                created_at: '2023-10-01 10:25:00',
+            },
+            {
+                id: 'USR017',
+                full_name: 'Benjamin Young',
+                email: 'benjamin.young@example.com',
+                role: 'User',
+                branch: 'Indianapolis',
+                status: 'Active',
+                last_login: '2023-10-09 13:40:00',
+                created_at: '2023-10-02 14:10:00',
+            },
+            {
+                id: 'USR018',
+                full_name: 'Charlotte Hernandez',
+                email: 'charlotte.hernandez@example.com',
+                role: 'User',
+                branch: 'Seattle',
+                status: 'Inactive',
+                last_login: '2023-09-27 08:55:00',
+                created_at: '2023-10-03 16:20:00',
+            },
+            {
+                id: 'USR019',
+                full_name: 'Lucas King',
+                email: 'lucas.king@example.com',
+                role: 'Admin',
+                branch: 'Denver',
+                status: 'Active',
+                last_login: '2023-10-10 09:35:00',
+                created_at: '2023-10-04 11:50:00',
+            },
+            {
+                id: 'USR020',
+                full_name: 'Harper Wright',
+                email: 'harper.wright@example.com',
+                role: 'User',
+                branch: 'Washington',
+                status: 'Active',
+                last_login: '2023-10-10 15:25:00',
+                created_at: '2023-10-05 13:30:00',
+            },
+            {
+                id: 'USR021',
+                full_name: 'Elijah Scott',
+                email: 'elijah.scott@example.com',
+                role: 'User',
+                branch: 'Boston',
+                status: 'Inactive',
+                last_login: '2023-09-30 10:10:00',
+                created_at: '2023-10-06 09:40:00',
+            },
+            {
+                id: 'USR022',
+                full_name: 'Evelyn Green',
+                email: 'evelyn.green@example.com',
+                role: 'Manager',
+                branch: 'El Paso',
+                status: 'Active',
+                last_login: '2023-10-11 08:20:00',
+                created_at: '2023-10-07 10:55:00',
+            },
+            {
+                id: 'USR023',
+                full_name: 'Alexander Adams',
+                email: 'alexander.adams@example.com',
+                role: 'User',
+                branch: 'Nashville',
+                status: 'Suspended',
+                last_login: '2023-09-24 16:00:00',
+                created_at: '2023-10-08 14:15:00',
+            },
+            {
+                id: 'USR024',
+                full_name: 'Abigail Baker',
+                email: 'abigail.baker@example.com',
+                role: 'User',
+                branch: 'Detroit',
+                status: 'Active',
+                last_login: '2023-10-11 17:10:00',
+                created_at: '2023-10-09 12:45:00',
+            },
+            {
+                id: 'USR025',
+                full_name: 'Henry Nelson',
+                email: 'henry.nelson@example.com',
+                role: 'Admin',
+                branch: 'Memphis',
+                status: 'Active',
+                last_login: '2023-10-12 09:50:00',
+                created_at: '2023-10-10 11:35:00',
+            }
+        ];
 
         return {
             users,
             currentPage: 1,
-            itemsPerPage: 5,
+            itemsPerPage: 10,
         }
     },
 
@@ -221,17 +351,18 @@ export default {
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem :value="5">5</SelectItem>
-                        <SelectItem :value="10">10</SelectItem>
-                        <SelectItem :value="20">20</SelectItem>
+                        <SelectItem :value="itemsPerPage">{{ itemsPerPage }}</SelectItem>
+                        <SelectItem :value="25">25</SelectItem>
+                        <SelectItem :value="50">50</SelectItem>
+                        <SelectItem :value="100">100</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
             <div class="flex justify-between items-center">
-                <Label class="text-sm text-muted-foreground px-2">
+                <Label>
                     Page {{ currentPage }} of {{ Math.ceil(totalItems / itemsPerPage) }}
                 </Label>
-                <div class="flex flex-col gap-6">
+                <div class="flex flex-col gap-5">
                     <Pagination :items-per-page="itemsPerPage" :total="totalItems" :page="currentPage"
                         @update:page="(p) => currentPage = p">
                         <PaginationContent class="flex items-center gap-2">
