@@ -306,9 +306,15 @@ export default {
 
 <template>
     <div class="flex flex-1 flex-col gap-4 p-4 pt-0">
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+        <!-- KPI Card dito -->
+        <div class="grid auto-rows-min gap-4 md:grid-cols-4">
+            <!-- Total Users -->
             <div class="aspect-video rounded-xl bg-muted/50" />
+            <!-- Total Inactive Users -->
             <div class="aspect-video rounded-xl bg-muted/50" />
+            <!-- Total Active Users -->
+            <div class="aspect-video rounded-xl bg-muted/50" />
+            <!-- Total Inactive Users -->
             <div class="aspect-video rounded-xl bg-muted/50" />
         </div>
         <div class="flex justify-between">
