@@ -1,9 +1,18 @@
 <script lang="ts">
-import { EllipsisVertical, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-vue-next'
+import {
+    EllipsisVertical,
+    ChevronLeft,
+    ChevronRight,
+    ChevronsLeft,
+    ChevronsRight,
+    Search,
+    Plus,
+} from 'lucide-vue-next'
 
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
 import {
     Table,
     TableBody,
@@ -39,12 +48,23 @@ import {
     PaginationNext,
     PaginationLast,
 } from '@/components/ui/pagination'
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from '@/components/ui/sheet'
 
 export default {
     components: {
         Badge,
         Button,
         Label,
+        Input,
+        Search,
+        Plus,
 
         EllipsisVertical,
         ChevronLeft,
@@ -82,6 +102,13 @@ export default {
         PaginationPrevious,
         PaginationNext,
         PaginationLast,
+
+        Sheet,
+        SheetContent,
+        SheetDescription,
+        SheetHeader,
+        SheetTitle,
+        SheetTrigger,
     },
     data() {
         const users = [
@@ -241,18 +268,33 @@ export default {
             users,
             currentPage: 1,
             itemsPerPage: 10,
+            search: '',
+            selectedUser: null as any,
         }
     },
 
     computed: {
+        searchUsers() {
+            if (!this.search) return this.users
+
+            const result = this.search.toLowerCase()
+
+            return this.users.filter(user =>
+                user.full_name.toLowerCase().includes(result) ||
+                user.email.toLowerCase().includes(result) ||
+                user.role.toLowerCase().includes(result) ||
+                user.branch.toLowerCase().includes(result) ||
+                user.status.toLowerCase().includes(result)
+            )
+        },
         paginatedUsers() {
             const start = (this.currentPage - 1) * this.itemsPerPage
             const end = start + this.itemsPerPage
-            return this.users.slice(start, end)
+            return this.searchUsers.slice(start, end)
         },
 
         totalItems() {
-            return this.users.length
+            return this.searchUsers.length
         }
     },
 
@@ -269,89 +311,157 @@ export default {
             <div class="aspect-video rounded-xl bg-muted/50" />
             <div class="aspect-video rounded-xl bg-muted/50" />
         </div>
+        <div class="flex justify-between">
+            <div class="flex w-full max-w-sm items-center space-x-2">
+                <div class="relative">
+                    <div
+                        class="text-muted-foreground/80 pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-3 peer-disabled:opacity-50">
+                        <Search class="size-4" />
+                    </div>
+                    <Input v-model="search" type="text" placeholder="Search users..." class="pl-9" />
+                </div>
+            </div>
+            <div class="flex max-w-sm items-center space-x-2">
+                <Button variant="outline" size="sm">
+                    Import
+                </Button>
+                <Button variant="default" size="sm">
+                    <Plus class="size-4" />
+                    Add User
+                </Button>
+            </div>
+        </div>
         <div class="min-h-[100vh] flex-1 rounded-md border md:min-h-min">
-            <Table>
-                <!-- <TableCaption>A list of your recent invoices.</TableCaption> -->
-                <TableHeader class="bg-muted/50">
-                    <TableRow>
-                        <!-- Main identifier (can include image + variant info) -->
-                        <TableHead>User ID</TableHead>
+            <Sheet>
+                <Table>
+                    <!-- <TableCaption>A list of your recent invoices.</TableCaption> -->
+                    <TableHeader class="bg-muted/50">
+                        <TableRow>
+                            <!-- Main identifier (can include image + variant info) -->
+                            <TableHead>User ID</TableHead>
 
-                        <!-- Main identifier (can include image + variant info) -->
-                        <TableHead>Full Name</TableHead>
+                            <!-- Main identifier (can include image + variant info) -->
+                            <TableHead>Full Name</TableHead>
 
-                        <!-- Unique product identifier for tracking -->
-                        <TableHead>Email</TableHead>
+                            <!-- Unique product identifier for tracking -->
+                            <TableHead>Email</TableHead>
 
-                        <!-- Helps filter and group products -->
-                        <TableHead>Role</TableHead>
+                            <!-- Helps filter and group products -->
+                            <TableHead>Role</TableHead>
 
-                        <!-- Current inventory level -->
-                        <TableHead>Branch</TableHead>
+                            <!-- Current inventory level -->
+                            <TableHead>Branch</TableHead>
 
-                        <!-- Minimum threshold before restocking -->
-                        <TableHead>Status</TableHead>
+                            <!-- Minimum threshold before restocking -->
+                            <TableHead>Status</TableHead>
 
-                        <!-- Selling price per unit -->
-                        <TableHead>Last Login</TableHead>
+                            <!-- Selling price per unit -->
+                            <TableHead>Last Login</TableHead>
 
-                        <!-- Purchase/manufacturing cost -->
-                        <TableHead>Created At</TableHead>
+                            <!-- Purchase/manufacturing cost -->
+                            <TableHead>Created At</TableHead>
 
-                        <!-- Auto-calculated (Price - Cost) -->
-                        <TableHead>Actions</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    <TableRow v-for="user in paginatedUsers" :key="user.id">
-                        <TableCell>
-                            <div
-                                class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                                <!-- <GalleryVerticalEnd class="size-4" /> -->
-                            </div>
-                        </TableCell>
-                        <TableCell class="font-medium">{{ user.full_name }}</TableCell>
-                        <TableCell>{{ user.email }}</TableCell>
-                        <TableCell>{{ user.role }}</TableCell>
-                        <TableCell>{{ user.branch }}</TableCell>
-                        <TableCell>
-                            <Badge :variant="user.status === 'Inactive'
-                                ? 'destructive'
-                                : 'success'
-                                ">
-                                {{ user.status }}
-                            </Badge>
-                        </TableCell>
-                        <TableCell>{{ user.last_login }}</TableCell>
-                        <TableCell>{{ user.created_at }}</TableCell>
-                        <TableCell>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                    <Button variant="ghost" size="icon">
-                                        <EllipsisVertical />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuItem>View</DropdownMenuItem>
-                                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                                    <DropdownMenuItem>Restock</DropdownMenuItem>
-                                    <DropdownMenuItem>Delete</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
+                            <!-- Auto-calculated (Price - Cost) -->
+                            <TableHead></TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        <TableRow v-for="user in paginatedUsers" :key="user.id">
+                            <TableCell class="font-medium">{{ user.id }}</TableCell>
+                            <TableCell class="font-medium">{{ user.full_name }}</TableCell>
+                            <TableCell>{{ user.email }}</TableCell>
+                            <TableCell>{{ user.role }}</TableCell>
+                            <TableCell>{{ user.branch }}</TableCell>
+                            <TableCell>
+                                <Badge :variant="user.status === 'Inactive'
+                                    ? 'destructive'
+                                    : 'success'
+                                    ">
+                                    {{ user.status }}
+                                </Badge>
+                            </TableCell>
+                            <TableCell>{{ user.last_login }}</TableCell>
+                            <TableCell>{{ user.created_at }}</TableCell>
+                            <TableCell>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger>
+                                        <Button variant="ghost" size="icon">
+                                            <EllipsisVertical />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                        <DropdownMenuItem>View</DropdownMenuItem>
+                                        <DropdownMenuItem @click="selectedUser = user">
+                                            <SheetTrigger class="w-full text-left">Edit</SheetTrigger>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem>Restock</DropdownMenuItem>
+                                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+
+                <SheetContent v-if="selectedUser">
+                    <SheetHeader>
+                        <SheetTitle>Edit User</SheetTitle>
+                        <SheetDescription>
+                            Make changes to the user's information.
+                        </SheetDescription>
+                    </SheetHeader>
+
+                    <div class="grid gap-4 py-4">
+                        <div>
+                            <Label>Full Name</Label>
+                            <Input v-model="selectedUser.full_name" />
+                        </div>
+
+                        <div>
+                            <Label>Email</Label>
+                            <Input v-model="selectedUser.email" />
+                        </div>
+
+                        <div>
+                            <Label>Role</Label>
+                            <Input v-model="selectedUser.role" />
+                        </div>
+
+                        <div>
+                            <Label>Branch</Label>
+                            <Input v-model="selectedUser.branch" />
+                        </div>
+
+                        <div>
+                            <Label>Status</Label>
+                            <Select v-model="selectedUser.status">
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Active">Active</SelectItem>
+                                    <SelectItem value="Inactive">Inactive</SelectItem>
+                                    <SelectItem value="Suspended">Suspended</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <Button class="mt-4">Save Changes</Button>
+                    </div>
+                </SheetContent>
+            </Sheet>
         </div>
         <div class="flex justify-between">
             <div class="flex items-center gap-2">
                 <Label for="itemsPerPage">Rows per page</Label>
-                <Select v-model="itemsPerPage">
+                <Select :model-value="itemsPerPage"
+                    @update:model-value="val => { itemsPerPage = Number(val); currentPage = 1 }">
                     <SelectTrigger id="itemsPerPage" class="w-20" tabindex="0">
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem :value="itemsPerPage">{{ itemsPerPage }}</SelectItem>
+                        <!-- <SelectItem :value="itemsPerPage">{{ itemsPerPage }}</SelectItem> -->
+                        <SelectItem :value="10">10</SelectItem>
                         <SelectItem :value="25">25</SelectItem>
                         <SelectItem :value="50">50</SelectItem>
                         <SelectItem :value="100">100</SelectItem>
@@ -368,18 +478,18 @@ export default {
                         <PaginationContent class="flex items-center gap-2">
 
                             <!-- FIRST -->
-                            <PaginationFirst :disabled="currentPage === 1" @click="currentPage = 1" />
+                            <PaginationFirst size="sm" :disabled="currentPage === 1" @click="currentPage = 1" />
 
                             <!-- PREVIOUS -->
-                            <PaginationPrevious :disabled="currentPage === 1"
+                            <PaginationPrevious size="sm" :disabled="currentPage === 1"
                                 @click="currentPage = Math.max(1, currentPage - 1)" />
 
                             <!-- NEXT -->
-                            <PaginationNext :disabled="currentPage === Math.ceil(totalItems / itemsPerPage)"
+                            <PaginationNext size="sm" :disabled="currentPage === Math.ceil(totalItems / itemsPerPage)"
                                 @click="currentPage = Math.min(Math.ceil(totalItems / itemsPerPage), currentPage + 1)" />
 
                             <!-- LAST -->
-                            <PaginationLast :disabled="currentPage === Math.ceil(totalItems / itemsPerPage)"
+                            <PaginationLast size="sm" :disabled="currentPage === Math.ceil(totalItems / itemsPerPage)"
                                 @click="currentPage = Math.ceil(totalItems / itemsPerPage)" />
 
                         </PaginationContent>
