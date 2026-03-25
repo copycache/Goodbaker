@@ -41,6 +41,13 @@ const router = createRouter({
                 import("../views/admin/Inventory/Products/Products.vue"),
               meta: { title: "Products" },
             },
+            {
+              path: "/inventory/raw-materials",
+              name: "raw-materials",
+              component: () =>
+                import("../views/admin/Inventory/Products/RawMaterials.vue"),
+              meta: { title: "RawMaterials" },
+            },
           ],
         },
 
