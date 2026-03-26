@@ -5,6 +5,7 @@ import {
     ChevronRight,
     ChevronsLeft,
     ChevronsRight,
+    ChevronsUpDown,
     Search,
     Plus,
 } from 'lucide-vue-next'
@@ -56,6 +57,14 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet'
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card'
 
 export default {
     components: {
@@ -65,6 +74,7 @@ export default {
         Input,
         Search,
         Plus,
+        ChevronsUpDown,
 
         EllipsisVertical,
         ChevronLeft,
@@ -109,6 +119,13 @@ export default {
         SheetHeader,
         SheetTitle,
         SheetTrigger,
+
+        Card,
+        CardContent,
+        CardDescription,
+        CardFooter,
+        CardHeader,
+        CardTitle,
     },
     data() {
         const users = [
@@ -295,6 +312,19 @@ export default {
 
         totalItems() {
             return this.searchUsers.length
+        },
+
+        totalUsers() {
+            return this.users.length
+        },
+        activeUsers() {
+            return this.users.filter(u => u.status === 'Active').length
+        },
+        inactiveUsers() {
+            return this.users.filter(u => u.status === 'Inactive').length
+        },
+        suspendedUsers() {
+            return this.users.filter(u => u.status === 'Suspended').length
         }
     },
 
@@ -307,16 +337,67 @@ export default {
 <template>
     <div class="flex flex-1 flex-col gap-4 p-4 pt-0">
         <!-- KPI Card dito -->
-        <div class="grid auto-rows-min gap-4 md:grid-cols-4">
-            <!-- Total Users -->
-            <div class="aspect-video rounded-xl bg-muted/50" />
-            <!-- Total Inactive Users -->
-            <div class="aspect-video rounded-xl bg-muted/50" />
-            <!-- Total Active Users -->
-            <div class="aspect-video rounded-xl bg-muted/50" />
-            <!-- Total Inactive Users -->
-            <div class="aspect-video rounded-xl bg-muted/50" />
+        <div class="grid gap-4 md:grid-cols-4">
+            <!-- TOTAL USERS -->
+            <Card class="rounded-2xl">
+                <CardHeader class="flex flex-row items-center justify-between pb-2">
+                    <CardDescription><Label>Total Users</Label></CardDescription>
+                    <Badge variant="outline">+12.5%</Badge>
+                    <!-- <span class="text-xs bg-green-500/10 text-green-400 px-2 py-1 rounded-md">
+                        +12.5%
+                    </span> -->
+                </CardHeader>
+
+                <CardContent>
+                    <CardTitle class="text-3xl font-bold">{{ totalUsers }}</CardTitle>
+                    <Label class="mt-4">Growing user base</Label>
+                    <CardDescription>Compared to last month</CardDescription>
+                </CardContent>
+            </Card>
+
+            <!-- ACTIVE USERS -->
+            <Card class="rounded-2xl">
+                <CardHeader class="flex flex-row items-center justify-between pb-2">
+                    <CardDescription><Label>Active Users</Label></CardDescription>
+                    <Badge variant="success">+8.2%</Badge>
+                </CardHeader>
+
+                <CardContent>
+                    <CardTitle class="text-3xl font-bold">{{ activeUsers }}</CardTitle>
+                    <Label class="mt-4">Strong engagement</Label>
+                    <CardDescription>Users active this period</CardDescription>
+                </CardContent>
+            </Card>
+
+            <!-- INACTIVE USERS -->
+            <Card class="rounded-2xl">
+                <CardHeader class="flex flex-row items-center justify-between pb-2">
+                    <CardDescription><Label>Inactive Users</Label></CardDescription>
+                    <Badge variant="destructive">-5.3%</Badge>
+                </CardHeader>
+
+                <CardContent>
+                    <CardTitle class="text-3xl font-bold">{{ inactiveUsers }}</CardTitle>
+                    <Label class="mt-4">Needs attention</Label>
+                    <CardDescription>No recent activity</CardDescription>
+                </CardContent>
+            </Card>
+
+            <!-- SUSPENDED USERS -->
+            <Card class="rounded-2xl">
+                <CardHeader class="flex flex-row items-center justify-between pb-2">
+                    <CardDescription><Label>Suspended Users</Label></CardDescription>
+                    <Badge variant="warning">+1.1%</Badge>
+                </CardHeader>
+
+                <CardContent>
+                    <CardTitle class="text-3xl font-bold">{{ suspendedUsers }}</CardTitle>
+                    <Label class="mt-4">Policy enforcement</Label>
+                    <CardDescription>Restricted accounts</CardDescription>
+                </CardContent>
+            </Card>
         </div>
+        <div class="aspect-video rounded-xl bg-muted/50" />
         <div class="flex justify-between">
             <div class="flex w-full max-w-sm items-center space-x-2">
                 <div class="relative">
@@ -344,22 +425,77 @@ export default {
                     <TableHeader class="bg-muted/50">
                         <TableRow>
                             <!-- Main identifier (can include image + variant info) -->
-                            <TableHead>User ID</TableHead>
+                            <TableHead>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger class="flex items-center gap-1">
+                                        User ID
+                                        <ChevronsUpDown class="size-4" />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        <DropdownMenuItem>Asc</DropdownMenuItem>
+                                        <DropdownMenuItem>Desc</DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableHead>
 
                             <!-- Main identifier (can include image + variant info) -->
-                            <TableHead>Full Name</TableHead>
+                            <TableHead>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger class="flex items-center gap-1">
+                                        Fullname
+                                        <ChevronsUpDown class="size-4" />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        <DropdownMenuItem>Asc</DropdownMenuItem>
+                                        <DropdownMenuItem>Desc</DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableHead>
 
                             <!-- Unique product identifier for tracking -->
                             <TableHead>Email</TableHead>
 
                             <!-- Helps filter and group products -->
-                            <TableHead>Role</TableHead>
+                            <TableHead>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger class="flex items-center gap-1">
+                                        Role
+                                        <ChevronsUpDown class="size-4" />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        <DropdownMenuItem>Asc</DropdownMenuItem>
+                                        <DropdownMenuItem>Desc</DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableHead>
 
                             <!-- Current inventory level -->
-                            <TableHead>Branch</TableHead>
+                            <TableHead>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger class="flex items-center gap-1">
+                                        Branch
+                                        <ChevronsUpDown class="size-4" />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        <DropdownMenuItem>Asc</DropdownMenuItem>
+                                        <DropdownMenuItem>Desc</DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableHead>
 
                             <!-- Minimum threshold before restocking -->
-                            <TableHead>Status</TableHead>
+                            <TableHead>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger class="flex items-center gap-1">
+                                        Status
+                                        <ChevronsUpDown class="size-4" />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        <DropdownMenuItem>Asc</DropdownMenuItem>
+                                        <DropdownMenuItem>Desc</DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableHead>
 
                             <!-- Selling price per unit -->
                             <TableHead>Last Login</TableHead>
